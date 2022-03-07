@@ -1,0 +1,56 @@
+
+
+The following instructions were run on a clean install of Ubuntu 20.04 LTS within Virtualbox (4GM RAM, 16 GB HD, minimal install option). The system was updated before the software install.
+
+Many people want to to help Anonymous during an operation but do not have the technical skills to help. This guide will help people get the right tools set up to help with reconnaissance / OSINT.
+
+Due to the amount of traffic these scans can use, it is HIGHLY recommended that these scans be done using a VPN (non-logging) or open network connection that cannot be associated to you. TOR wil be very slow.
+
+For this tutorial, we will be installing masscan. Masscan is a network port and host discovery tool. It has the ability to scan a massive number of hosts very quickly.
+
+    Ensure that your system is up to date. To do that, run the following commands:
+
+        sudo apt update
+        sudo apt upgrade
+
+    Next, you'll want to install masscan by using the below command. NOTE: The version that installs does not support the --top-ports option.
+
+        sudo apt install masscan
+
+    Now that masscan is installed, we need to use it properly. I like to scan in four groups: web, databases, VPNs, and everything else. See the ports lists for all the ports. Ports can either be single, multiple, or as a range. NOTE: There are no spaces when you have multiple ports listed.
+
+        -p80
+        -p80,443,8080 (note there are no spaces)
+        -p3000-4000 (all ports from 3000 to 4000)
+
+    There are a few ways to scan: a single IP address, a subnet, or via an input file. The inputfile is a good way to scan a large number of subnets or IP addresses such as what you'll find in an Autonomous System (AS) list.
+
+        masscan 192.168.0.1
+        masscan 192.168.0.0/24
+        masscan -iL ipfile.txt
+
+    To get the results of the scan, we will output it to a file in JSON format. You can also use -oX for XML format. Both are good to use when you want to open in a spreadsheet. If you are going to use command line tools, use -oG.
+    Now we're going to put this all together into a useful command template. You want to use either the ports written out OR a list of the ports, not both.
+
+        sudo masscan {-p<list_of_ports> | -iL ipfile.txt} -oJ <output_file.txt>
+
+    Using the template and the list of ports we can now put together a usefull command. We will use the ports written out instead of a file list. You'll need to run this using sudo when using a default Ubuntu install.
+
+        sudo masscan -p80,443,8000,8008,8080,8443,9000,9009 192.168.0.0/24 -oJ output.json
+
+    That's it! Now go help and gather data for an op!
+
+Other Ports:
+21,22,23,25,53,110,111,119,123,135,136,137,138,139,143,161,194,389,445,500,514,636,993,995,1364,1414,1723,2000,3389,5900,8200,9001
+
+Web Ports:
+80,443,1527,4443,4848,7001,8000,8005,8009,8008,8080,8181,8443,9000,9009,9043,9060,9080,9443,9943,9990
+
+Printer Ports:
+69,80,137,138,161,162201,202,204,206,213,427,443,515,530,721,722,723,724,725,726,727,728,729,730,731,843,1433,1900,2493,2000,2501,2502,2503,3001,3329,3702,3910,3911,4088,4089,5222,5357,6869,7267,8000,8050,8080,8140,8143,8443,8611,8612,86139000,9001,9100,27892,54925,54926,59113
+
+Database Ports:
+1158,1433,1434,1521,1583,1630,2424,2434,2480,3050,3200,3300,3306,3351,3989,4022,4444,4800,5432,5520,5540,5560,5580,5600,5620,5640,5984,6379,8000,8182,11000,11211,27017,27018,27019,44300,49895,49896,49897,50000,61000
+
+VPN Ports:
+50,51,500,623,830,1194,1645,1646,1701,1723,1812,1813,3009,3011,4001,4433,4500,4739,5432,5557, 5558,5900,6576,7101,9004,26214,51820
